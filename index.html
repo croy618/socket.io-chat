@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+    <head>
+        <title>socket.io chat</title>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <!-- Custom styles -->
+        <link rel="stylesheet" href="style.css" />
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="container-fluid fill-height">
+            <div class="row">
+                <div id="rightContainer" class="col-sm-8 fill-height">
+                    <p id="you">Who are you?</p>
+                    <div id="chatOuter" class="content-height element-container">
+                        <div id="chatMiddle">
+                            <div id="chat">
+                                <ul id="messages"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 fill-height">
+                    <p id="online">Online users:</p>
+                    <div class="content-height element-container">
+                        <ul id="users"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="col-sm-12">
+                <!--form action="">
+                    <input id="m" autocomplete="off" /><button>Send</button>
+                </form-->
+                <div class="input-group">
+                    <input id="input" type="text" class="form-control input-sm" placeholder="Type your message here...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-info btn-sm" id="submit">
+                            Send Message</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                allCookies = document.cookie;
+                console.log("Cookies: "+allCookies);
+                function scroll(element) {
+                    element.scrollTop = element.scrollHeight;
+                }
+
+                function printMsg(message){
+                    let temp = $('<li>').html("\["+message.timestamp+"\] <span style=\"color:"+message.origin.color+";\">"+message.origin.name+":</span> "+message.body);
+                    if (message.origin.name === you) {
+                        temp.css("font-weight","Bold");
+                    }
+                    $('#messages').append(temp);
+                    scroll(document.getElementById('chatOuter'));
+                }
+
+                let you;
+                var socket = io();
+                /*$('form').submit(function(){
+                    socket.emit('chat message', $('#m').val());
+                    $('#m').val('');
+                    return false;
+                });*/
+                $('#submit').click(function(){
+                    socket.emit('chat message', $('#input').val());
+                    $('#input').val('');
+                });
+                $('#input').keypress(function(e){
+                    if (e.which == 13){
+                        $('#submit').click();
+                    }
+                });
+                socket.on('chat message', function(message){
+                    printMsg(message);
+                    window.scrollTo(0, document.body.scrollHeight);
+                });
+                socket.on('system message', function(message) {
+                    $('#messages').append($('<li>').html(message).css("font-style","italic"));
+                    scroll(document.getElementById('chatOuter'));
+                });
+                socket.on('youAre', function(user){
+                    $('#you').html("You are ").append($('<span>').text(user.name).css('color', user.color));
+                    you = user.name;
+                    document.cookie = "user="+user.name+":"+user.color;
+                });
+                socket.on('updateUsers', function(users){
+                    $('#users').empty();
+                    //console.log(users);
+                    for (i in users) {
+                        $('#users').append($('<li>').text(users[i].name).css('color', users[i].color));
+                    }
+                });
+                socket.on('history', function(messages){
+                    for (i in messages){
+                        printMsg(messages[i]);
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

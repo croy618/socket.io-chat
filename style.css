@@ -1,0 +1,78 @@
+#users {
+     list-style-type: none;
+     margin:0;
+     padding: 0;
+}
+ #users li {
+     padding: 5px 10px 0 10px;
+}
+ #messages {
+     list-style-type: none;
+     margin: 0;
+     padding: 0;
+     max-width:100%;
+}
+ #messages li {
+     padding: 5px 10px;
+     width:100%;
+     float:left;
+     word-wrap:break-word;
+}
+ #messages li:nth-child(odd) {
+     background: #cecece;
+}
+ .footer {
+     position:absolute;
+     bottom:0;
+     padding:15px 0;
+     width: 100%;
+     background: #a6a6a8;
+}
+ .fill-height {
+     height: calc(100vh - 60px);
+     height: -o-calc(100vh - 60px);
+     height: -webkit-calc(100vh - 60px);
+     height: -moz-calc(100vh - 60px);
+     background: #a6a6a8;
+}
+ .content-height {
+     height: calc(100vh - 110px);
+     height: -o-calc(100vh - 110px);
+     height: -webkit-calc(100vh - 110px);
+     height: -moz-calc(100vh - 110px);
+     border: 2px solid black;
+     border-radius: 5px;
+     background: #e8e9f3;
+}
+ .element-container {
+     margin:15px 0px;
+}
+ .element-container-left {
+     padding-right: 7.5px;
+}
+ .element-container-right {
+     padding-left: 7.5px;
+}
+ #you {
+     margin: 15px;
+}
+ #online {
+     margin: 15px;
+}
+ #chatOuter {
+     overflow-y: auto;
+}
+ #chatMiddle {
+     display:flex;
+     min-height:100%;
+     max-width:100%;
+}
+ #chat {
+     display:flex;
+     flex-direction:column-reverse;
+     align-self:flex-end;
+     width:100%;
+}
+ #rightContainer {
+     padding-right:0px;
+}
